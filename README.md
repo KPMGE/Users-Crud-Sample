@@ -2,7 +2,7 @@
 
 ### Goal
 
-The goal of this api is learn how to create a simple api
+The goal of this simple project is learn how to create a simple API(Application programming interface)
 for users. Each user has 3 properties, name, age and email and, of course,
 there are 4 operations: Create, Read, Update and Delete a user (CRUD).
 
@@ -17,3 +17,35 @@ that makes our interaction with MongoDb more easily with NodeJs
 
 this api uses the last versions of javaScript and, of course, ES6 notation
 with import/export and so on.
+
+### Instalation
+
+In order to install and use this API, you just need to clone the current repository, after that,
+you can run the command `npm install` or `yarn install`. Now you have all needed dependencies installed.
+Now, it's time to configure your working environment variables. Fist, create a file named `.env` and set
+the properties `DB_URI` and `SERVER_PORT` with your credentials. Lastly, you can run the command `npm start` or
+`npm run devStart`. The first choice runs the API with standart node, and the second one runs it with nodemon.
+
+### Routes
+
+There are 5 routes you can use in order to retrive, create, update and delete data from database.
+
+##### Get all users
+
+> localhost:**<defined port>**/api/users
+
+##### Get user by provided id
+
+> localhost:**<defined port>**/api/users/**<user id>**
+
+##### Create new user
+
+> localhost:**<defined port>**/api/users
+
+##### Update a created user
+
+> localhost:**<defined port>**/api/users/**<user id>**
+
+##### Update a created user
+
+> localhost:**<defined port>**/api/users/**<user id>**
