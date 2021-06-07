@@ -4,7 +4,7 @@
 
 The goal of this simple project is learn how to create a simple API(Application programming interface)
 for users. Each user has 3 properties, name, age and email, of course,
-there are 4 operations: Create, Read, Update and Delete a user (CRUD). These operations will operate 
+there are 4 operations: Create, Read, Update and Delete a user (CRUD). These operations will operate
 upon a database, in case, MongoDb which is a incredible powerful NoSql database.
 
 ### Used Tecnologies
@@ -33,20 +33,20 @@ There are 5 routes you can use in order to retrive, create, update and delete da
 
 ##### Get all users
 
-> localhost:**<defined port>**/api/users
+> localhost:**_defined port_**/api/users
 
 ##### Get user by provided id
 
-> localhost:**<defined port>**/api/users/**<user id>**
+> localhost:**_defined port_**/api/users/**_user id_**
 
 ##### Create new user
 
-> localhost:**<defined port>**/api/users
+> localhost:**_defined port_**/api/users
 
 ##### Update a created user
 
-> localhost:**<defined port>**/api/users/**<user id>**
+> localhost:**_defined port_**/api/users/**_user id_**
 
 ##### Update a created user
 
-> localhost:**<defined port>**/api/users/**<user id>**
+> localhost:**_defined port_**/api/users/**_user id_**
