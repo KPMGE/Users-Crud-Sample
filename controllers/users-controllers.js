@@ -1,4 +1,5 @@
 import { HttpError } from "../models/http-error.js";
+import { validationResult } from "express-validator";
 
 let DUMMY_USERS = [
   {
@@ -33,6 +34,16 @@ export const getUserById = (req, res, next) => {
 };
 
 export const createUser = (req, res, next) => {
+  const inputErros = validationResult(req);
+
+  if (!inputErros.isEmpty()) {
+    const error = new HttpError(
+      "Invalid inputs passed, please check your data and try again.",
+      422
+    );
+    return next(error);
+  }
+
   const { name, email, age } = req.body;
 
   const createdUser = {
@@ -43,10 +54,20 @@ export const createUser = (req, res, next) => {
 
   DUMMY_USERS.push(createdUser);
 
-  res.status(200).json(DUMMY_USERS);
+  res.json({ user: createdUser });
 };
 
 export const updateUser = (req, res, next) => {
+  const inpuErros = validationResult(req);
+
+  if (!inpuErros.isEmpty()) {
+    const error = new HttpError(
+      "Invalid inputs, please check your data and try again.",
+      422
+    );
+    return next(error);
+  }
+
   const { userId } = req.params;
   const { name, age, email } = req.body;
 
@@ -63,7 +84,7 @@ export const updateUser = (req, res, next) => {
   foundUser.name = name;
   foundUser.email = email;
 
-  res.status(200).json({ DUMMY_USERS });
+  res.status(200).json({ user: foundUser });
 };
 
 export const deleteUser = (req, res, next) => {
