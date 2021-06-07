@@ -55,6 +55,6 @@ There are 5 routes you can use in order to retrive, create, update and delete da
 
 > localhost:**_defined port_**/api/users/**_user id_**
 
-##### Update a created user
+##### Delete a created user
 
 > localhost:**_defined port_**/api/users/**_user id_**
