@@ -1,3 +1,5 @@
+import { HttpError } from "../models/http-error.js";
+
 let DUMMY_USERS = [
   {
     id: "u1",
@@ -23,9 +25,8 @@ export const getUserById = (req, res, next) => {
   const foundUser = DUMMY_USERS.find((user) => user.id === userId);
 
   if (!foundUser) {
-    return res
-      .status(404)
-      .json({ message: "There are no users with that id!" });
+    const error = new HttpError("There is no user with provided id", 404);
+    return next(error);
   }
 
   res.status(200).json({ user: foundUser });
@@ -53,10 +54,11 @@ export const updateUser = (req, res, next) => {
   const foundUser = DUMMY_USERS.find((user) => user.id === userId);
 
   if (!foundUser) {
-    return res.status(404).json({ message: "There is no user with that id!" });
+    const error = new HttpError("There is no user with that id!", 404);
+    return next(error);
   }
 
-  // creating new user
+  // updating new user
   foundUser.age = age;
   foundUser.name = name;
   foundUser.email = email;
@@ -70,7 +72,8 @@ export const deleteUser = (req, res, next) => {
   const foundUser = DUMMY_USERS.find((user) => user.id === userId);
 
   if (!foundUser) {
-    return res.status(404).json({ message: "There is no user with that id!" });
+    const error = new HttpError("There is no user with that id!", 404);
+    return next(error);
   }
 
   DUMMY_USERS = DUMMY_USERS.filter((user) => user.id !== userId);
