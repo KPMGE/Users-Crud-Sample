@@ -1,41 +1,42 @@
 import { HttpError } from "../models/http-error.js";
 import { validationResult } from "express-validator";
+import User from "../models/user.js";
 
-let DUMMY_USERS = [
-  {
-    id: "u1",
-    name: "Kevin",
-    age: 20,
-    email: "someemail@gmail.com",
-  },
-  {
-    id: "u2",
-    name: "Laura",
-    age: 19,
-    email: "someemail2@gmail.com",
-  },
-];
-
-export const getAllUsers = (req, res, next) => {
-  res.status(200).json({ users: DUMMY_USERS });
-};
-
-export const getUserById = (req, res, next) => {
-  const { userId } = req.params;
-
-  const foundUser = DUMMY_USERS.find((user) => user.id === userId);
-
-  if (!foundUser) {
-    const error = new HttpError("There is no user with provided id", 404);
+export const getAllUsers = async (req, res, next) => {
+  // finding user all users
+  let users;
+  try {
+    users = await User.find();
+  } catch (err) {
+    const error = new HttpError("Could not get users", 500);
     return next(error);
   }
 
-  res.status(200).json({ user: foundUser });
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
-export const createUser = (req, res, next) => {
+export const getUserById = async (req, res, next) => {
+  const { userId } = req.params;
+
+  // finding user by id
+  let foundUser;
+  try {
+    foundUser = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find user",
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ user: foundUser.toObject({ getters: true }) });
+};
+
+export const createUser = async (req, res, next) => {
   const inputErros = validationResult(req);
 
+  // validating inputs
   if (!inputErros.isEmpty()) {
     const error = new HttpError(
       "Invalid inputs passed, please check your data and try again.",
@@ -46,20 +47,31 @@ export const createUser = (req, res, next) => {
 
   const { name, email, age } = req.body;
 
-  const createdUser = {
+  // creating new user
+  const createdUser = new User({
     name,
     email,
     age,
-  };
+  });
 
-  DUMMY_USERS.push(createdUser);
+  // saving it
+  try {
+    await createdUser.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find user",
+      500
+    );
+    return next(error);
+  }
 
-  res.json({ user: createdUser });
+  res.json(createdUser);
 };
 
-export const updateUser = (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   const inpuErros = validationResult(req);
 
+  // validating inputs
   if (!inpuErros.isEmpty()) {
     const error = new HttpError(
       "Invalid inputs, please check your data and try again.",
@@ -72,32 +84,61 @@ export const updateUser = (req, res, next) => {
   const { name, age, email } = req.body;
 
   // finding user
-  const foundUser = DUMMY_USERS.find((user) => user.id === userId);
-
-  if (!foundUser) {
-    const error = new HttpError("There is no user with that id!", 404);
+  let foundUser;
+  try {
+    foundUser = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find place.",
+      500
+    );
     return next(error);
   }
 
-  // updating new user
+  // updating user
   foundUser.age = age;
   foundUser.name = name;
   foundUser.email = email;
 
-  res.status(200).json({ user: foundUser });
-};
-
-export const deleteUser = (req, res, next) => {
-  const { userId } = req.params;
-
-  const foundUser = DUMMY_USERS.find((user) => user.id === userId);
-
-  if (!foundUser) {
-    const error = new HttpError("There is no user with that id!", 404);
+  // saving it
+  try {
+    await foundUser.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not save user.",
+      500
+    );
     return next(error);
   }
 
-  DUMMY_USERS = DUMMY_USERS.filter((user) => user.id !== userId);
+  res.status(200).json({ user: foundUser });
+};
 
-  res.status(200).json(DUMMY_USERS);
+export const deleteUser = async (req, res, next) => {
+  const { userId } = req.params;
+
+  // finding user
+  let foundUser;
+  try {
+    foundUser = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find user",
+      500
+    );
+    return next(error);
+  }
+
+  // deleting it
+  try {
+    foundUser.remove();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not delete user",
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ message: "Deleted user!" });
 };

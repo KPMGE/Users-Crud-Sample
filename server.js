@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import usersRoutes from "./routes/users-routes.js";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 import { HttpError } from "./models/http-error.js";
 
@@ -31,6 +32,14 @@ app.use((error, req, res, next) => {
 const port = process.env.SERVER_PORT || 3000;
 const uri = process.env.DB_URI;
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+mongoose
+  .connect(uri, { useNewUrlParser: true })
+  .then(() => {
+    app.listen(port, () => {
+      console.log("Connected to the database!");
+      console.log(`Listening on port ${port}`);
+    });
+  })
+  .catch(() => {
+    console.log("Error in connection");
+  });
